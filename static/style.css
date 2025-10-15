@@ -1,0 +1,743 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.status-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.gauge-wrapper {
+    position: relative;
+    width: 400px;
+    height: 250px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.gauge-container {
+    position: relative;
+    width: 400px;
+    height: 200px;
+    overflow: visible;
+    display: flex;
+    justify-content: center;   /* center canvas horizontally */
+    align-items: flex-end;     /* allow bottom-based positioning (centerY = height) */
+
+}
+
+.current-temp {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+}
+
+.shower-count {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    color: #666;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+}
+
+.status-info {
+    background: #f8f9fa;
+    padding: 15px 25px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.status-info div {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+.btn {
+    padding: 12px 24px;
+    margin: 5px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    min-width: 160px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-primary { background-color: #007bff; color: white; }
+.btn-success { background-color: #28a745; color: white; }
+.btn-danger { background-color: #dc3545; color: white; }
+.btn-secondary { background-color: #6c757d; color: white; }
+
+.status-on { color: #28a745; font-weight: bold; }
+.status-off { color: #dc3545; font-weight: bold; }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 12px;
+    width: 400px;
+    text-align: center;
+}
+
+.temperature-selector {
+    margin: 20px 0;
+}
+
+.temperature-selector label {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.temperature-slider {
+    width: 100%;
+    margin: 25px 0;
+    height: 40px;
+}
+
+.temperature-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right, #4CAF50, #FFC107, #FF5722);
+    border-radius: 4px;
+}
+
+.temperature-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #007bff;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    cursor: pointer;
+    margin-top: -8px;
+}
+
+.temperature-display {
+    font-size: 28px;
+    font-weight: bold;
+    color: #007bff;
+    margin: 15px 0;
+}
+
+.shower-info-display {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    min-height: 24px;
+}
+
+.rtl .shower-info-display {
+    direction: rtl
+}
+
+.shower-markers {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    position: relative;
+    height: 30px;
+}
+
+.shower-marker {
+    position: absolute;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 12px;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.shower-marker::before {
+    content: '';
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 12px;
+    background: #007bff;
+}
+
+.modal-buttons {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+#targetTempInput {
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    text-align: center;
+}
+
+#targetTempInput:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Gauge marker styles */
+.gauge-markers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    color: #666;
+    font-weight: bold;
+    white-space: nowrap;
+    background: white;
+    padding: 2px 4px;
+    border-radius: 2px;
+    pointer-events: auto;
+}
+
+.marker-line {
+    position: absolute;
+    width: 2px;
+    background: #666;
+    transform-origin: bottom center;
+    pointer-events: none;
+}
+
+.marker-shower {
+    color: #007bff;
+    font-weight: bold;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+
+#temperature-input {
+    width: 200px;
+    -webkit-appearance: none; /* Remove default styling for WebKit browsers */
+    background: #ddd;
+    height: 8px;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+
+
+#temperature-input:hover {
+    opacity: 1;
+}
+
+#temperature-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+}
+
+#current-temperature {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* Language selector styles */
+.language-selector {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.language-selector select {
+    padding: 8px 12px;
+    border: 2px solid #007bff;
+    border-radius: 6px;
+    background: white;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+}
+
+.language-selector select:hover {
+    border-color: #0056b3;
+}
+
+/* RTL support for Hebrew */
+.rtl {
+    direction: rtl;
+    text-align: right;
+}
+
+.rtl .container {
+    text-align: center;
+}
+
+.rtl .status-panel {
+    text-align: center;
+}
+
+.rtl .controls {
+    text-align: center;
+}
+
+.rtl .status-info {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.rtl .language-selector {
+    right: 20px;
+    left: auto;
+}
+
+.rtl .gauge-container {
+    direction: ltr; /* Keep gauge LTR even in RTL mode */
+    text-align: center;
+}
+
+.rtl .gauge-wrapper {
+    margin: 0 auto;
+}
+
+.rtl .modal-content {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.rtl .temperature-selector {
+    text-align: center;
+}
+
+.rtl .modal-buttons {
+    justify-content: center; /* Keep buttons centered in RTL */
+    text-align: center;
+}
+
+.rtl .btn {
+    text-align: center;
+}
+
+.rtl .current-temp,
+.rtl .shower-count {
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Completely isolate the slider from RTL */
+.temperature-selector {
+    direction: ltr;
+    text-align: center;
+}
+
+.rtl .temperature-selector {
+    direction: rtl;
+    text-align: center;
+}
+
+.temperature-slider-container {
+    direction: ltr !important;
+    unicode-bidi: isolate;
+}
+
+.temperature-slider {
+    direction: ltr !important;
+    unicode-bidi: isolate;
+}
+
+/* Override any RTL transforms on the slider */
+.rtl .temperature-slider {
+    direction: ltr !important;
+    transform: none !important;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .container {
+        padding: 20px;
+        max-width: 100%;
+        margin: 0 auto;
+        border-radius: 8px;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .status-panel {
+        gap: 20px;
+    }
+
+    .gauge-wrapper {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .gauge-container {
+        width: 100%;
+        height: 150px;
+    }
+
+    .current-temp {
+        font-size: 28px;
+        bottom: 40px;
+    }
+
+    .shower-count {
+        font-size: 14px;
+        bottom: 15px;
+    }
+
+    .controls {
+        gap: 10px;
+        width: 100%;
+    }
+
+    .status-on.with-estimate small {
+        font-size: 0.7em;
+    }
+
+    .status-info {
+        padding: 12px 15px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .status-info div {
+        margin: 6px 0;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        font-size: 16px;
+        min-width: 140px;
+        width: 100%;
+        max-width: 200px;
+    }
+
+    /* Language selector for mobile */
+    .language-selector {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        background: white;
+        padding: 4px;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        left: auto; /* Ensure no left positioning */
+    }
+
+    .language-selector select {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+
+    /* Modal adjustments for mobile */
+    .modal-content {
+        width: 90%;
+        max-width: 350px;
+        margin: 10% auto;
+        padding: 20px;
+    }
+
+    .temperature-selector {
+        margin: 15px 0;
+    }
+
+    .temperature-selector label {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .temperature-display {
+        font-size: 24px;
+    }
+
+    .shower-info-display {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    /* RTL adjustments for mobile */
+    .rtl .language-selector {
+        right: auto;
+        left: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+
+    .container {
+        padding: 15px;
+        margin-top: 55px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .gauge-wrapper {
+        max-width: 150px;
+        height: 135px;
+    }
+
+    .gauge-container {
+        height: 140px;
+    }
+
+    .current-temp {
+        font-size: 24px;
+        bottom: 35px;
+    }
+
+    .shower-count {
+        font-size: 12px;
+        bottom: -5px;
+    }
+
+    .status-info {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+        min-width: 120px;
+    }
+
+    /* Adjust gauge canvas size for very small screens */
+    #tempGauge {
+        width: 90% !important;
+        height: 130px !important;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    .btn {
+        min-height: 44px; /* Minimum touch target size */
+    }
+
+    .language-selector select {
+        min-height: 44px;
+        padding: 12px;
+    }
+
+    .temperature-slider {
+        height: 44px; /* Larger touch target for slider */
+    }
+
+    .temperature-slider::-webkit-slider-thumb {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Orientation-specific adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+    body {
+        align-items: flex-start;
+        padding: 5px;
+    }
+
+    .container {
+        padding: 10px;
+        max-width: 100%;
+    }
+
+    .status-panel {
+        flex-direction: row;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .gauge-wrapper {
+        width: 50%;
+        max-width: 200px;
+    }
+
+    .gauge-container {
+        height: 120px;
+    }
+
+    .current-temp {
+        font-size: 20px;
+        bottom: 30px;
+    }
+
+    .shower-count {
+        font-size: 11px;
+        bottom: 10px;
+    }
+
+    .controls {
+        width: 50%;
+        gap: 8px;
+    }
+
+    .status-info {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-width: 100px;
+    }
+}
+
+/* High-DPI screen optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .btn {
+        border-width: 1px;
+    }
+
+    .temperature-slider::-webkit-slider-thumb {
+        border-width: 2px;
+    }
+}
+
+/* Toast notifications */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10000;
+    transition: transform 0.3s ease;
+    max-width: 90%;
+    text-align: center;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-success {
+    background: #28a745;
+}
+
+.toast-error {
+    background: #dc3545;
+}
+
+.toast-info {
+    background: #17a2b8;
+}
+
+/* Status with countdown */
+.status-on small {
+    font-size: 0.8em;
+    opacity: 0.8;
+    font-weight: normal;
+    display: block;
+    margin-top: 2px;
+}
+
+/* Status with estimate display */
+.status-on.with-estimate {
+    line-height: 1.3;
+}
+
+.status-on.with-estimate small {
+    font-size: 0.75em;
+    opacity: 0.8;
+    font-weight: normal;
+    display: block;
+    margin-top: 2px;
+    font-style: italic;
+}

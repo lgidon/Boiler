@@ -1,0 +1,19 @@
+
+services:
+  water-boiler-app:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - boiler-network
+    environment:
+      - TZ=Asia/Jerusalem
+
+networks:
+  boiler-network:
+    driver: bridge

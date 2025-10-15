@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title id="page-title">Water Boiler Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.1">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="language-selector">
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="he">עברית</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <h1 id="main-title">Water Boiler Control</h1>  <!-- Changed from page-title to main-title -->
+
+        <div class="status-panel">
+            <div class="gauge-wrapper">
+                <div class="gauge-container">
+                    <canvas id="tempGauge" width="400" height="200"></canvas>
+                    <div class="current-temp" id="currentTemp">--°C</div>
+                    <div class="shower-count" id="showerCount">Select a temperature to see shower availability</div>  <!-- Fixed ID -->
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="status-info">
+                    <div><span id="last-update-label">Last Update</span>: <span id="lastUpdate">--</span></div>
+                    <div><span id="boiler-status-label">Boiler Status</span>: <span id="boilerStatus">Unknown</span></div>
+                    <div id="targetTempDisplay"><span id="target-label">Target</span>: --°C</div>
+                </div>
+
+                <button id="refreshBtn" class="btn btn-primary">Refresh Now</button>
+                <button id="boilerToggle" class="btn">Toggle Boiler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for temperature input -->
+    <div id="tempModal" class="modal">
+        <div class="modal-content">
+            <h3>Set Target Temperature</h3>
+
+            <div class="temperature-selector">
+                <label for="temperature-input">Select Temperature:</label>
+
+                <input type="range" id="temperature-input" class="temperature-slider"
+                       min="37" max="80" value="60" step="1">
+
+                <div class="temperature-display">
+                    <span id="current-temperature">60°C</span>
+                </div>
+
+                <div class="shower-info-display" id="shower-info">
+                    Select a temperature to see shower availability
+                </div>
+
+                <div class="shower-markers" id="shower-markers">
+                    <!-- Shower markers will be dynamically added here -->
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="confirmTemp" class="btn btn-primary">Start Boiler</button>
+                <button id="cancelTemp" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
