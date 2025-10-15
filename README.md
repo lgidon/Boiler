@@ -11,7 +11,8 @@
 Web control for the dolphin water heater app.
 Currently supports English and Hebrew.
 
-<img width="493" height="715" alt="image" src="https://github.com/user-attachments/assets/95bc0932-9820-4d4c-a853-93c1f2626500" />
+<img width="493" height="715" alt="image" src="https://github.com/user-attachments/assets/db590c5d-1302-495d-a631-6e60eb59db02" />
+
 
 
 ## Prerequisits
