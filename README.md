@@ -15,7 +15,7 @@ Currently supports English and Hebrew.
 
 
 
-## Prerequisits
+## Prerequisites
 1. Get API key for the dolphin (Use email and password for the Dolphin app).
 ```powershell
    curl https://api.dolphinboiler.com/HA/V1/getAPIkey.php -d "email=abc@abc.com" -d "password=XXXXXXXXXX"
